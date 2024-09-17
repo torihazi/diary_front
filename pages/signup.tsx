@@ -14,8 +14,10 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const UserSignUpScheema = z.object({
+  name: z.string().min(1, "Required"),
   email: z.string().min(1, "Required").email(),
   password: z.string().min(1, "Required"),
+  passwordConfirmation: z.string().min(1, "Required"),
 });
 
 type UserSignUpScheemaType = z.infer<typeof UserSignUpScheema>;
@@ -68,6 +70,20 @@ const SignUp = () => {
         spacing={3}
       >
         <Typography variant="h4">新規登録</Typography>
+        <Controller
+          name="name"
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              type="text"
+              label="Name"
+              error={fieldState.invalid}
+              helperText={fieldState.error?.message}
+              sx={{ width: "60%", minWidth: "245px" }}
+            />
+          )}
+        />
         <Controller
           name="email"
           control={control}
