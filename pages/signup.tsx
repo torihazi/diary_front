@@ -1,4 +1,9 @@
 import { Header } from "@/features/header/components/Header";
+import {
+  UserSignUpScheema,
+  UserSignUpScheemaType,
+  useSignUp,
+} from "@/lib/api/authUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -9,20 +14,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-
-const UserSignUpScheema = z.object({
-  name: z.string().min(1, "Required"),
-  email: z.string().min(1, "Required").email(),
-  password: z.string().min(1, "Required"),
-  passwordConfirmation: z.string().min(1, "Required"),
-});
-
-type UserSignUpScheemaType = z.infer<typeof UserSignUpScheema>;
 
 const SignUp = () => {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
   const {
     control,
@@ -32,12 +29,18 @@ const SignUp = () => {
     mode: "onChange",
     resolver: zodResolver(UserSignUpScheema),
   });
-  console.log(isValid);
 
-  const onSubmit: SubmitHandler<UserSignUpScheemaType> = (
+  const onSubmit: SubmitHandler<UserSignUpScheemaType> = async (
     data: UserSignUpScheemaType
   ) => {
-    console.log("data:", data);
+    try {
+      const newUser = await useSignUp(data);
+      console.log(newUser);
+      router.push("/home");
+    } catch (err) {
+      console.error(err);
+      router.push("signup");
+    }
   };
 
   const handleClickShowPassword = () => setIsVisible((prev) => !prev);
@@ -106,6 +109,36 @@ const SignUp = () => {
               {...field}
               type={isVisible ? "text" : "password"}
               label="password"
+              error={fieldState.invalid}
+              helperText={fieldState.error?.message}
+              sx={{ width: "60%", minWidth: "245px" }}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        onMouseUp={handleMouseUpPassword}
+                      >
+                        {isVisible ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="passwordConfirmation"
+          control={control}
+          render={({ field, fieldState }) => (
+            <TextField
+              {...field}
+              type={isVisible ? "text" : "password"}
+              label="passwordConfirmation"
               error={fieldState.invalid}
               helperText={fieldState.error?.message}
               sx={{ width: "60%", minWidth: "245px" }}

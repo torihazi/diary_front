@@ -6,7 +6,7 @@ import DiaryPreview from "@/features/home/components/DiaryPreview";
 import EnrollmentBanner from "@/features/home/components/EnrollmentBanner";
 import Footer from "@/features/footer/components/Footer";
 
-export default function Home() {
+export default function Index() {
   return (
     <>
       <Head>
