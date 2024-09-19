@@ -14,7 +14,6 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (!config.headers.has("Authorization")) {
     config.headers.set("Authorization", Cookies.get("token"));
   }
-
   return config;
 });
 

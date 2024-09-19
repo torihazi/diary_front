@@ -1,12 +1,19 @@
-import { Header } from "@/features/header/components/Header";
+import { DiariesTemplate } from "@/components/template/DiariesTemplate";
+import { DiariesList } from "@/features/diaries/components/diaries-list";
+import { DiariesPageTitle } from "@/features/diaries/components/diaries-page-title";
+import { DiariesSearchBar } from "@/features/diaries/components/diaries-search-bar";
+import { useDiaries } from "@/lib/api/diaries";
 
-const Diaries = () => {
+const DiaryIndex = () => {
+  const { data: diaries } = useDiaries();
+
   return (
-    <>
-      <Header />
-      Diary
-    </>
+    <DiariesTemplate>
+      <DiariesPageTitle />
+      <DiariesSearchBar />
+      <DiariesList diaries={diaries} />
+    </DiariesTemplate>
   );
 };
 
-export default Diaries;
+export default DiaryIndex;

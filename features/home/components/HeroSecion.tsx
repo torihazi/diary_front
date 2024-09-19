@@ -1,7 +1,9 @@
 import { East } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 export const HeroSection = () => {
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -55,6 +57,7 @@ export const HeroSection = () => {
         }}
         size="large"
         endIcon={<East />}
+        onClick={() => router.push("/signin")}
       >
         無料で始める
       </Button>

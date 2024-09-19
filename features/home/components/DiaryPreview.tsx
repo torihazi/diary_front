@@ -1,3 +1,4 @@
+import { CustomLink } from "@/components/ui/cutom-link";
 import {
   Box,
   Card,
@@ -5,9 +6,7 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  Link as MuiLink,
 } from "@mui/material";
-import NextLink from "next/link";
 import React from "react";
 
 const DiaryPreview = () => {
@@ -81,16 +80,7 @@ const DiaryPreview = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <MuiLink
-                  component={NextLink}
-                  href="#"
-                  underline="none"
-                  sx={{
-                    color: "#AB54F1",
-                  }}
-                >
-                  続きを読む
-                </MuiLink>
+                <CustomLink />
               </CardActions>
             </Card>
           </Box>
