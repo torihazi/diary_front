@@ -1,4 +1,9 @@
 import { Header } from "@/features/header/components/Header";
+import {
+  signinInputScheema,
+  SigninInputScheemaType,
+  useSignin,
+} from "@/lib/api/authUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
@@ -9,33 +14,30 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-
-const UserSignInScheema = z.object({
-  email: z.string().min(1, "Required").email(),
-  password: z.string().min(1, "Required"),
-});
-
-type UserSignInScheemaType = z.infer<typeof UserSignInScheema>;
 
 const SignUp = () => {
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
+  const { signin } = useSignin({
+    onSuccess: () => router.push("/diaries"),
+  });
+
   const {
     control,
     handleSubmit,
     formState: { isValid },
-  } = useForm<UserSignInScheemaType>({
+  } = useForm<SigninInputScheemaType>({
     mode: "onChange",
-    resolver: zodResolver(UserSignInScheema),
+    resolver: zodResolver(signinInputScheema),
   });
-  console.log(isValid);
 
-  const onSubmit: SubmitHandler<UserSignInScheemaType> = (
-    data: UserSignInScheemaType
+  const onSubmit: SubmitHandler<SigninInputScheemaType> = (
+    data: SigninInputScheemaType
   ) => {
-    console.log("data:", data);
+    signin(data);
   };
 
   const handleClickShowPassword = () => setIsVisible((prev) => !prev);
@@ -76,6 +78,7 @@ const SignUp = () => {
               {...field}
               type="text"
               label="email"
+              autoComplete="off"
               error={fieldState.invalid}
               helperText={fieldState.error?.message}
               sx={{ width: "60%", minWidth: "245px" }}

@@ -1,7 +1,9 @@
 import { DarkMode } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 export const Header = () => {
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -20,7 +22,9 @@ export const Header = () => {
           backgroundClip: "text",
           color: "transparent",
           display: "inline-block",
+          cursor: "pointer",
         }}
+        onClick={() => router.push("/home")}
       >
         TechInsights
       </Typography>
