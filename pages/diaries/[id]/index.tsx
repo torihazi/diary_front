@@ -14,7 +14,7 @@ const DiaryShow = () => {
 
   return (
     <DiaryTemplate>
-      <DiaryView diary={diary} />
+      <DiaryView diary={diary as Diary} />
     </DiaryTemplate>
   );
 };
