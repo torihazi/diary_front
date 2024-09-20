@@ -7,10 +7,12 @@ const Editor = ({
   value,
   onChange,
   holder,
+  readonly = false,
 }: {
-  value: OutputData | null;
+  value: OutputData;
   onChange: (data: OutputData) => void;
   holder: string;
+  readonly?: boolean;
 }) => {
   const editorRef = useRef<EditorJS | null>(null);
 
@@ -20,8 +22,9 @@ const Editor = ({
         holder: holder || "editorjs",
         placeholder: "入力してください",
         tools: EDITOR_CONFIG,
-        // data: value
-        async onChange(api, event) {
+        readOnly: readonly,
+        data: value,
+        async onChange(api) {
           const data = await api.saver.save();
           onChange(data);
         },

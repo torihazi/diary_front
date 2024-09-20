@@ -21,9 +21,10 @@ export const DiariesList = ({ diaries }: { diaries: Diary[] }) => {
                 >
                   {dayjs(diary.createdAt).format("YYYY/MM/DD")}
                 </Typography>
-                <Typography variant="body1" component="p" noWrap>
+                {/* editorjsのdataがjsonオブジェクトで表示されるので消した。 */}
+                {/* <Typography variant="body1" component="p" noWrap>
                   {diary.content}
-                </Typography>
+                </Typography> */}
                 <CustomLink href={`/diaries/${diary.id}`}>
                   続きを読む
                 </CustomLink>
