@@ -68,7 +68,7 @@ export const diaryInputSchema = z.object({
 
 export type diaryInputSchemaType = z.infer<typeof diaryInputSchema>;
 
-export const postNewDiaryInput = async (
+export const createDiary = async (
   data: diaryInputSchemaType
 ): Promise<Diary> => {
   const newData = { diary: { ...data } };
@@ -85,9 +85,9 @@ export const useCreateDiary = ({
   const setSnackBarState = useSetRecoilState(snackbarAtom);
   const { mutate } = useSWRConfig();
 
-  const createDiary = async (data: diaryInputSchemaType) => {
+  const handleCreateDiary = async (data: diaryInputSchemaType) => {
     try {
-      const newDiary = await postNewDiaryInput(data);
+      const newDiary = await createDiary(data);
       mutate("/api/v1/diaries");
       setSnackBarState(successState("作成しました"));
       if (onSuccess) {
@@ -103,14 +103,14 @@ export const useCreateDiary = ({
     }
   };
 
-  return { createDiary };
+  return { handleCreateDiary };
 };
 
 //
 // update
 //
 
-export const putUpdateDiaryInput = async (
+export const updateDiary = async (
   id: Diary["id"],
   data: diaryInputSchemaType
 ): Promise<Diary> => {
@@ -128,7 +128,7 @@ export const useUpdateDiary = ({
   const setSnackBarState = useSetRecoilState(snackbarAtom);
   const { mutate } = useSWRConfig();
 
-  const updateDiary = async ({
+  const handleUpdateDiary = async ({
     data,
     id,
   }: {
@@ -136,7 +136,7 @@ export const useUpdateDiary = ({
     id: Diary["id"];
   }) => {
     try {
-      const updatedDiary = await putUpdateDiaryInput(id, data);
+      const updatedDiary = await updateDiary(id, data);
       mutate("/api/v1/diaries");
       setSnackBarState(successState("更新が完了しました"));
       if (onSuccess) {
@@ -152,5 +152,44 @@ export const useUpdateDiary = ({
     }
   };
 
-  return { updateDiary };
+  return { handleUpdateDiary };
+};
+
+//
+// delete
+//
+
+export const deleteDiary = ({ id }: { id: Diary["id"] }): Promise<Diary> => {
+  return api.delete(`/api/v1/diaries/${id}`);
+};
+
+export const useDeleteDiary = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: () => void;
+}) => {
+  const setSnackBarState = useSetRecoilState(snackbarAtom);
+  const { mutate } = useSWRConfig();
+
+  const handleDeleteDiary = async ({ id }: { id: Diary["id"] }) => {
+    try {
+      const deletedDiary = await deleteDiary({ id });
+      mutate("/api/v1/diaries");
+      setSnackBarState(successState("削除に成功しました"));
+      if (onSuccess) {
+        onSuccess();
+      }
+      return deletedDiary;
+    } catch (err) {
+      setSnackBarState(errorState("削除に失敗しました"));
+      if (onError) {
+        onError();
+      }
+      throw err;
+    }
+  };
+
+  return { handleDeleteDiary };
 };
