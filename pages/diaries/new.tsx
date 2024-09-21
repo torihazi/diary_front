@@ -2,11 +2,10 @@ import { DiaryTemplate } from "@/components/template/DiaryTemplate";
 import { DiaryTitleForm } from "@/features/diaries/components/diary-title-form";
 import { INITIAL_EDITOR_DATA } from "@/features/editorjs/constants/initial-editor-data";
 import {
-  createInputScheema,
-  createInputSchemaType,
+  diaryInputSchema,
+  diaryInputSchemaType,
   useCreateDiary,
 } from "@/lib/api/diaries";
-import { OutputData } from "@editorjs/editorjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@mui/material";
 import dynamic from "next/dynamic";
@@ -19,7 +18,9 @@ const Editor = dynamic(() => import("@/features/editorjs/editor-js"), {
 });
 
 const DiaryNew = () => {
-  const [outputData, setOutputData] = useState<OutputData>(INITIAL_EDITOR_DATA);
+  const [outputData, setOutputData] = useState<string>(
+    JSON.stringify(INITIAL_EDITOR_DATA)
+  );
   const router = useRouter();
   const { createDiary } = useCreateDiary({
     onSuccess: () => {
@@ -27,17 +28,17 @@ const DiaryNew = () => {
     },
   });
 
-  const form = useForm<createInputSchemaType>({
+  const form = useForm<diaryInputSchemaType>({
     mode: "onChange",
-    resolver: zodResolver(createInputScheema),
+    resolver: zodResolver(diaryInputSchema),
   });
 
-  const onValid: SubmitHandler<createInputSchemaType> = (
-    data: createInputSchemaType
+  const onValid: SubmitHandler<diaryInputSchemaType> = (
+    data: diaryInputSchemaType
   ) => {
     const newData = {
       ...data,
-      content: JSON.stringify(outputData),
+      content: outputData,
     };
     createDiary(newData);
   };

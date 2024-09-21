@@ -9,8 +9,8 @@ const Editor = ({
   holder,
   readonly = false,
 }: {
-  value: OutputData;
-  onChange: (data: OutputData) => void;
+  value: string;
+  onChange: (data: string) => void;
   holder: string;
   readonly?: boolean;
 }) => {
@@ -23,10 +23,10 @@ const Editor = ({
         placeholder: "入力してください",
         tools: EDITOR_CONFIG,
         readOnly: readonly,
-        data: value,
+        data: JSON.parse(value),
         async onChange(api) {
-          const data = await api.saver.save();
-          onChange(data);
+          const data: OutputData = await api.saver.save();
+          onChange(JSON.stringify(data));
         },
       });
 

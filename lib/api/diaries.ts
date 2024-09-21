@@ -61,15 +61,15 @@ export const useDiary = (id: Diary["id"]) => {
 // create
 //
 
-export const createInputScheema = z.object({
+export const diaryInputSchema = z.object({
   title: z.string().min(1, "Required"),
   content: z.string().nullish(),
 });
 
-export type createInputSchemaType = z.infer<typeof createInputScheema>;
+export type diaryInputSchemaType = z.infer<typeof diaryInputSchema>;
 
 export const postNewDiaryInput = async (
-  data: createInputSchemaType
+  data: diaryInputSchemaType
 ): Promise<Diary> => {
   const newData = { diary: { ...data } };
   return api.post("/api/v1/diaries", newData);
@@ -85,7 +85,7 @@ export const useCreateDiary = ({
   const setSnackBarState = useSetRecoilState(snackbarAtom);
   const { mutate } = useSWRConfig();
 
-  const createDiary = async (data: createInputSchemaType) => {
+  const createDiary = async (data: diaryInputSchemaType) => {
     try {
       const newDiary = await postNewDiaryInput(data);
       mutate("/api/v1/diaries");
@@ -104,4 +104,53 @@ export const useCreateDiary = ({
   };
 
   return { createDiary };
+};
+
+//
+// update
+//
+
+export const putUpdateDiaryInput = async (
+  id: Diary["id"],
+  data: diaryInputSchemaType
+): Promise<Diary> => {
+  const updateData = { diary: { ...data } };
+  return api.put(`/api/v1/diaries/${id}`, updateData);
+};
+
+export const useUpdateDiary = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: () => void;
+}) => {
+  const setSnackBarState = useSetRecoilState(snackbarAtom);
+  const { mutate } = useSWRConfig();
+
+  const updateDiary = async ({
+    data,
+    id,
+  }: {
+    data: diaryInputSchemaType;
+    id: Diary["id"];
+  }) => {
+    try {
+      const updatedDiary = await putUpdateDiaryInput(id, data);
+      mutate("/api/v1/diaries");
+      setSnackBarState(successState("更新が完了しました"));
+      if (onSuccess) {
+        onSuccess();
+      }
+      return updatedDiary;
+    } catch (err) {
+      setSnackBarState(errorState("更新が失敗しました"));
+      if (onError) {
+        onError();
+      }
+      throw err;
+    }
+  };
+
+  return { updateDiary };
 };
