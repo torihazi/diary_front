@@ -25,7 +25,7 @@ export const DiaryEdit = () => {
   const router = useRouter();
 
   const { data: diary } = useDiary(router.query.id as string);
-  const { updateDiary } = useUpdateDiary({
+  const { handleUpdateDiary: update } = useUpdateDiary({
     onSuccess: () => {
       router.push("/diaries");
     },
@@ -46,7 +46,7 @@ export const DiaryEdit = () => {
       ...data,
       content: outputData,
     };
-    updateDiary({ data: newData, id: router.query.id as string });
+    update({ data: newData, id: router.query.id as string });
   };
 
   return (

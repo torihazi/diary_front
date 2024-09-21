@@ -22,7 +22,7 @@ const DiaryNew = () => {
     JSON.stringify(INITIAL_EDITOR_DATA)
   );
   const router = useRouter();
-  const { createDiary } = useCreateDiary({
+  const { handleCreateDiary: create } = useCreateDiary({
     onSuccess: () => {
       router.push("/diaries");
     },
@@ -40,7 +40,7 @@ const DiaryNew = () => {
       ...data,
       content: outputData,
     };
-    createDiary(newData);
+    create(newData);
   };
 
   return (
