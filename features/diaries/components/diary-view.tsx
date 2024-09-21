@@ -7,6 +7,11 @@ import { useState } from "react";
 import { DiaryDeleteModal } from "./diary-delete-modal";
 import { DeleteButton } from "@/components/ui/delete-button";
 import { EditButton } from "@/components/ui/edit-button";
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(() => import("@/features/editorjs/editor-js"), {
+  ssr: false,
+});
 
 export const DiaryView = ({ diary }: { diary: Diary }) => {
   const router = useRouter();
@@ -31,9 +36,12 @@ export const DiaryView = ({ diary }: { diary: Diary }) => {
             {dayjs(diary?.createdAt).format("YYYY/MM/DD")}
           </Typography>
         </Box>
-        <Box>
-          <Typography>{diary?.content}</Typography>
-        </Box>
+        <Editor
+          value={diary?.content as string}
+          // onChange={setOutputData}
+          holder="editorjs"
+          readonly
+        />
       </Box>
       <DiaryDeleteModal
         open={isOpen}

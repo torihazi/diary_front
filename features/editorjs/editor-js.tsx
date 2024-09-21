@@ -10,7 +10,7 @@ const Editor = ({
   readonly = false,
 }: {
   value: string;
-  onChange: (data: string) => void;
+  onChange?: (data: string) => void;
   holder: string;
   readonly?: boolean;
 }) => {
@@ -26,7 +26,9 @@ const Editor = ({
         data: JSON.parse(value),
         async onChange(api) {
           const data: OutputData = await api.saver.save();
-          onChange(JSON.stringify(data));
+          if (onChange) {
+            onChange(JSON.stringify(data));
+          }
         },
       });
 
